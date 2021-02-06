@@ -1,6 +1,8 @@
 package main
 
 import (
+	"authenticator/config"
+	"authenticator/internal/core"
 	"authenticator/internal/infrastructure"
 	"os"
 
@@ -14,6 +16,13 @@ func main() {
 		panic(err)
 	}
 
+	db := config.NewDatabaseConnection()
+
 	server := infrastructure.NewServer(os.Getenv("APP_PORT"), os.Getenv("GIN_MODE"))
+
+	repositories := core.InitRepository(db.Conn)
+
+	infrastructure.NewRouter(repositories).SetRoutes(server.Router)
+
 	server.Start()
 }
