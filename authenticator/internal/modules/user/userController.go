@@ -22,8 +22,8 @@ func (u *UserController) CreateUser(c *gin.Context) {
 	err := c.Bind(request)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "error",
-			"data":    err.Error(),
+			"status": "error",
+			"data":   err.Error(),
 		})
 		return
 	}
@@ -31,14 +31,40 @@ func (u *UserController) CreateUser(c *gin.Context) {
 	password, err := usecase.CreateUser(request, u.userRepository)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "error",
-			"data":    err.Error(),
+			"status": "error",
+			"data":   err.Error(),
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "success",
-		"data":    password,
+		"status": "success",
+		"data":   password,
+	})
+}
+
+func (u *UserController) LoginUser(c *gin.Context) {
+	request := &core.LoginRequest{}
+	err := c.Bind(request)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": "error",
+			"data":   err.Error(),
+		})
+		return
+	}
+
+	token, err := usecase.LoginUser(request, u.userRepository)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": "error",
+			"data":   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status": "success",
+		"data":   token,
 	})
 }

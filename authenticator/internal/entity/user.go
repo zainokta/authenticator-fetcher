@@ -20,6 +20,7 @@ type User struct {
 
 type IUserRepository interface {
 	Create(name, phone, role string) (string, error)
+	FindByPhone(phone string) (*User, error)
 }
 
 func ValidateUserName(name string) error {

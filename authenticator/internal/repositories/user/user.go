@@ -42,3 +42,28 @@ func (u *UserRepository) Create(name, phone, role string) (string, error) {
 
 	return password, nil
 }
+
+func (u *UserRepository) FindByPhone(phone string) (*entity.User, error) {
+	row, err := u.db.Query("SELECT * FROM users WHERE phone = $1", phone)
+	if err != nil {
+		return nil, err
+	}
+
+	defer row.Close()
+
+	user := &entity.User{}
+	hasResult := false
+
+	for row.Next() {
+		err := row.Scan(&user.ID, &user.Name, &user.Phone, &user.Role, &user.Password, &user.CreatedAt)
+		if err != nil {
+			return nil, err
+		}
+		hasResult = true
+	}
+	if !hasResult {
+		return nil, errors.New("User with phone " + phone + " not found.")
+	}
+
+	return user, nil
+}
