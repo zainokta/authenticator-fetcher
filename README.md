@@ -63,17 +63,6 @@ docker-compose up --build
 
 Fill up the .env file with your local config (must)
 
-### Deploying / Publishing
-give instructions on how to build and release a new version
-In case there's some step you have to take that publishes this project to a
-server, this is the right time to state it.
-
-```shell
-packagemanager deploy your-project -s server.com -u username -p password
-```
-
-And again you'd need to tell what the previous code actually does.
-
 ## Configuration
 
 - Authenticator
