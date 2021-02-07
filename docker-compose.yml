@@ -1,0 +1,47 @@
+version: '3'
+services: 
+    db: 
+        container_name: db
+        restart: always
+        build: ./postgres 
+        volumes:
+          - ./tmp/db:/var/lib/postgresql/data
+        ports: 
+          - "5432:5432"
+    redis:
+        container_name: cache
+        image: redis:alpine
+        restart: always
+    authenticator_app:
+        container_name: authenticator_app
+        build: ./authenticator
+        ports:
+          - "8000:8000"
+        links: 
+          - db
+    fetcher_app:
+        container_name: fetcher_app
+        build: ./fetcher
+        ports:
+          - "8001:8001"
+        links: 
+          - db
+          - redis
+    adminer:
+        image: adminer
+        ports:
+          - "8080:8080"
+        links: 
+          - db
+    api-gateway:
+        build: ./nginx
+        tty: true
+        links: 
+          - authenticator_app
+          - fetcher_app
+        ports:
+            - "80:80"
+        restart: always
+        depends_on: 
+            - authenticator_app
+            - fetcher_app
