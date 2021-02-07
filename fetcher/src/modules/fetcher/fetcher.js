@@ -21,7 +21,9 @@ exports.fetcher = async(req, res) => {
             const response = await axios.get(BASE_URL)
             redisClient.setex('stein', 3600, JSON.stringify(response.data))
             const mappedData = await mapCurrency(response.data)
-            res.status(200).json(mappedData)
+            res.status(200).json({
+                data: mappedData
+            })
         }catch(err){
             res.status(500).json(err.message)
         }
