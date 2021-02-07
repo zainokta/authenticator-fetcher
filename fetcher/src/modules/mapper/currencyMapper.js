@@ -1,8 +1,6 @@
 const redisClient = require('../../infrastructure/redis')
 const axios = require('axios')
 
-const CURRENCY_API_URL = 'https://free.currconv.com/api/v7/convert?q=USD_IDR&compact=ultra&apiKey=547807587094635f1a50'
-
 async function getCurrency() {
     let result = await redisClient.getAsync('currency')
     if (result) {
@@ -10,7 +8,7 @@ async function getCurrency() {
     }
 
     try {
-        const response = await axios.get(CURRENCY_API_URL)
+        const response = await axios.get(process.env.BASE_CURRENCY_CONVERTER_URL)
         redisClient.setex('currency', 3600, JSON.stringify(response.data.USD_IDR))
         result = response.data.USD_IDR
     } catch (err) {

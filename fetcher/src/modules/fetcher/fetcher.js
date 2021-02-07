@@ -2,8 +2,6 @@ const axios = require('axios')
 const redisClient = require('../../infrastructure/redis')
 const mapCurrency = require('../mapper/currencyMapper')
 
-const BASE_URL = 'https://stein.efishery.com/v1/storages/5e1edf521073e315924ceab4/list'
-
 exports.fetcher = async(req, res) => {
     return redisClient.get('stein', async(err, result) => {
         if (result) {
@@ -18,7 +16,7 @@ exports.fetcher = async(req, res) => {
         }
 
         try {
-            const response = await axios.get(BASE_URL)
+            const response = await axios.get(process.env.BASE_STEIN_URL)
             redisClient.setex('stein', 3600, JSON.stringify(response.data))
             const mappedData = await mapCurrency(response.data)
             res.status(200).json({
