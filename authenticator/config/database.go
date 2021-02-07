@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"os"
+	"time"
 )
 
 type Database struct {
@@ -11,14 +12,28 @@ type Database struct {
 }
 
 func NewDatabaseConnection() Database {
+	var err error
+	var db *sql.DB
+
 	psqlInfo := getPostgreInfo()
 
-	db, err := sql.Open("postgres", psqlInfo)
-	if err != nil {
-		panic(err)
+	for i := 0; i < 10; i++ {
+		db, err = sql.Open("postgres", psqlInfo)
+
+		if err != nil {
+			fmt.Printf("Unable to Open DB: %s... Retrying\n", err.Error())
+			time.Sleep(time.Second * 6)
+		} else if err = db.Ping(); err != nil {
+			fmt.Printf("Unable to Ping DB: %s... Retrying\n", err.Error())
+			time.Sleep(time.Second * 6)
+		} else {
+			err = nil
+			break
+		}
 	}
 
-	err = db.Ping()
+	fmt.Println("Database connected")
+
 	if err != nil {
 		panic(err)
 	}
