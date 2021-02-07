@@ -18,9 +18,11 @@
   "homepage": "https://github.com/zainokta/authenticator-fetcher#readme",
   "dependencies": {
     "axios": "^0.21.1",
+    "bluebird": "^3.7.2",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "jsonwebtoken": "^8.5.1"
+    "jsonwebtoken": "^8.5.1",
+    "redis": "^3.0.2"
   }
 }
